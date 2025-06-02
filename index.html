@@ -1,0 +1,1575 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CloudShare - Comparte tus archivos de forma segura y rápida">
+    <meta name="theme-color" content="#0a0a0a">
+    <title>CloudShare - Comparte tus archivos</title>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <style>
+        :root {
+            /* Tema Oscuro (Default) */
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #121212;
+            --bg-tertiary: #1a1a1a;
+            --bg-hover: #252525;
+            --text-primary: #ffffff;
+            --text-secondary: #b3b3b3;
+            --accent: #4a90e2;
+            --accent-hover: #357abd;
+            --error: #e74c3c;
+            --success: #2ecc71;
+            --warning: #f1c40f;
+            --border-radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f5f5f5;
+            --bg-tertiary: #e0e0e0;
+            --bg-hover: #d0d0d0;
+            --text-primary: #000000;
+            --text-secondary: #666666;
+            --accent: #2196f3;
+            --accent-hover: #1976d2;
+        }
+
+        [data-theme="purple"] {
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --bg-tertiary: #0f3460;
+            --bg-hover: #533483;
+            --text-primary: #ffffff;
+            --text-secondary: #e94560;
+            --accent: #e94560;
+            --accent-hover: #d32f2f;
+        }
+
+        [data-theme="green"] {
+            --bg-primary: #1b4332;
+            --bg-secondary: #2d6a4f;
+            --bg-tertiary: #40916c;
+            --bg-hover: #74c69d;
+            --text-primary: #ffffff;
+            --text-secondary: #d8f3dc;
+            --accent: #52b788;
+            --accent-hover: #40916c;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            width: 100%;
+        }
+
+        header {
+            background-color: var(--bg-secondary);
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--text-primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo i {
+            color: var(--accent);
+        }
+
+        .storage-info {
+            background-color: var(--bg-tertiary);
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .storage-bar {
+            width: 100%;
+            height: 8px;
+            background-color: var(--bg-secondary);
+            border-radius: 4px;
+            margin: 0.5rem 0;
+            overflow: hidden;
+        }
+
+        .storage-progress {
+            height: 100%;
+            background-color: var(--accent);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .storage-text {
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .upload-container {
+            background-color: var(--bg-tertiary);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            margin-top: 2rem;
+            text-align: center;
+            border: 2px dashed var(--accent);
+            transition: var(--transition);
+        }
+
+        .upload-container:hover {
+            background-color: var(--bg-hover);
+            border-color: var(--accent-hover);
+        }
+
+        .upload-area {
+            padding: 2rem;
+            cursor: pointer;
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        .upload-text {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .file-list {
+            margin-top: 2rem;
+            background-color: var(--bg-tertiary);
+            border-radius: var(--border-radius);
+            padding: 1rem;
+        }
+
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background-color: var(--bg-secondary);
+            margin-bottom: 0.5rem;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .file-item:hover {
+            background-color: var(--bg-hover);
+            transform: translateY(-2px);
+        }
+
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex: 1;
+        }
+
+        .file-preview {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--border-radius);
+            object-fit: cover;
+            background-color: var(--bg-tertiary);
+        }
+
+        .file-name {
+            color: var(--text-primary);
+            word-break: break-all;
+            font-weight: 500;
+        }
+
+        .file-size {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+
+        .file-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-left: 1rem;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+            font-size: 1.2rem;
+        }
+
+        .action-btn:hover {
+            background-color: var(--bg-hover);
+            color: var(--text-primary);
+            transform: scale(1.1);
+        }
+
+        .action-btn.delete:hover {
+            color: var(--error);
+        }
+
+        .action-btn.download:hover {
+            color: var(--success);
+        }
+
+        .action-btn.share:hover {
+            color: var(--accent);
+        }
+
+        .upload-btn {
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: bold;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .upload-btn:hover {
+            background-color: var(--accent-hover);
+            transform: translateY(-2px);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background-color: var(--bg-secondary);
+            border-radius: 2px;
+            margin-top: 0.5rem;
+            overflow: hidden;
+            display: none;
+        }
+
+        .progress {
+            width: 0%;
+            height: 100%;
+            background-color: var(--accent);
+            transition: width 0.3s ease;
+        }
+
+        .error-message {
+            color: var(--error);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            display: none;
+            padding: 0.5rem;
+            background-color: rgba(231, 76, 60, 0.1);
+            border-radius: var(--border-radius);
+        }
+
+        .success-message {
+            color: var(--success);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            display: none;
+            padding: 0.5rem;
+            background-color: rgba(46, 204, 113, 0.1);
+            border-radius: var(--border-radius);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+            display: none;
+        }
+
+        .empty-state.visible {
+            display: block;
+        }
+
+        .file-type-icon {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            background-color: var(--bg-tertiary);
+            border-radius: var(--border-radius);
+            color: var(--accent);
+        }
+
+        .share-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .share-modal.active {
+            display: flex;
+        }
+
+        .share-content {
+            background-color: var(--bg-secondary);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+        }
+
+        .share-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 1.5rem;
+            transition: var(--transition);
+        }
+
+        .share-close:hover {
+            color: var(--error);
+        }
+
+        .share-link {
+            background-color: var(--bg-tertiary);
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            margin: 1rem 0;
+            word-break: break-all;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .share-link input {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            width: 100%;
+            font-size: 1rem;
+        }
+
+        .share-link input:focus {
+            outline: none;
+        }
+
+        .copy-btn {
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .copy-btn:hover {
+            background-color: var(--accent-hover);
+        }
+
+        .file-stats {
+            display: flex;
+            gap: 1rem;
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .file-stat {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .drag-over {
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            padding: 1rem 2rem;
+            border-radius: var(--border-radius);
+            color: white;
+            font-weight: 500;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: var(--transition);
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast.success {
+            background-color: var(--success);
+        }
+
+        .toast.error {
+            background-color: var(--error);
+        }
+
+        .toast.warning {
+            background-color: var(--warning);
+        }
+
+        .settings-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .settings-modal.active {
+            display: flex;
+        }
+
+        .settings-content {
+            background-color: var(--bg-secondary);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+        }
+
+        .settings-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .settings-section h3 {
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .settings-option {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--bg-tertiary);
+        }
+
+        .settings-option:last-child {
+            border-bottom: none;
+        }
+
+        .settings-label {
+            color: var(--text-primary);
+        }
+
+        .settings-value {
+            color: var(--text-secondary);
+        }
+
+        .settings-toggle {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .settings-toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .settings-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--bg-tertiary);
+            transition: var(--transition);
+            border-radius: 24px;
+        }
+
+        .settings-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: var(--transition);
+            border-radius: 50%;
+        }
+
+        input:checked + .settings-slider {
+            background-color: var(--accent);
+        }
+
+        input:checked + .settings-slider:before {
+            transform: translateX(26px);
+        }
+
+        .search-bar {
+            background-color: var(--bg-tertiary);
+            border: none;
+            padding: 0.8rem 1rem;
+            border-radius: var(--border-radius);
+            color: var(--text-primary);
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+
+        .search-bar:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px var(--accent);
+        }
+
+        .file-filters {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background-color: var(--bg-tertiary);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .filter-btn.active {
+            background-color: var(--accent);
+            color: white;
+        }
+
+        .filter-btn:hover {
+            background-color: var(--bg-hover);
+        }
+
+        .sort-options {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .sort-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: var(--transition);
+        }
+
+        .sort-btn:hover {
+            color: var(--text-primary);
+        }
+
+        .sort-btn.active {
+            color: var(--accent);
+        }
+
+        .comments-section {
+            margin-top: 2rem;
+            background-color: var(--bg-tertiary);
+            border-radius: var(--border-radius);
+            padding: 1rem;
+        }
+
+        .comment-form {
+            margin-bottom: 1rem;
+        }
+
+        .comment-input {
+            width: 100%;
+            background-color: var(--bg-secondary);
+            border: none;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .comment-input:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px var(--accent);
+        }
+
+        .comment {
+            background-color: var(--bg-secondary);
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 1rem;
+        }
+
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .comment-author {
+            font-weight: bold;
+            color: var(--text-primary);
+        }
+
+        .comment-date {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .comment-content {
+            color: var(--text-primary);
+        }
+
+        .password-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .password-modal.active {
+            display: flex;
+        }
+
+        .password-content {
+            background-color: var(--bg-secondary);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .password-input {
+            width: 100%;
+            background-color: var(--bg-tertiary);
+            border: none;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            color: var(--text-primary);
+            margin: 1rem 0;
+        }
+
+        .password-input:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px var(--accent);
+        }
+
+        .theme-selector {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .theme-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 2px solid var(--bg-tertiary);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .theme-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .theme-btn.active {
+            border-color: var(--accent);
+        }
+
+        .theme-btn[data-theme="dark"] {
+            background: linear-gradient(45deg, #0a0a0a, #121212);
+        }
+
+        .theme-btn[data-theme="light"] {
+            background: linear-gradient(45deg, #ffffff, #f5f5f5);
+        }
+
+        .theme-btn[data-theme="purple"] {
+            background: linear-gradient(45deg, #1a1a2e, #16213e);
+        }
+
+        .theme-btn[data-theme="green"] {
+            background: linear-gradient(45deg, #1b4332, #2d6a4f);
+        }
+
+        .comments-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .comments-modal.active {
+            display: flex;
+        }
+
+        .comments-content {
+            background-color: var(--bg-secondary);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 600px;
+            position: relative;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .stats-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .stats-modal.active {
+            display: flex;
+        }
+
+        .stats-content {
+            background-color: var(--bg-secondary);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .stat-item {
+            background-color: var(--bg-tertiary);
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .file-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .file-actions {
+                margin-left: 0;
+                margin-top: 1rem;
+                width: 100%;
+                justify-content: flex-end;
+            }
+
+            .file-info {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <a href="#" class="logo">
+                <i class="ri-cloud-line"></i>
+                CloudShare
+            </a>
+            <div class="header-actions">
+                <button class="action-btn" onclick="openStats()" title="Estadísticas">
+                    <i class="ri-bar-chart-line"></i>
+                </button>
+                <button class="action-btn" onclick="openComments()" title="Comentarios">
+                    <i class="ri-chat-1-line"></i>
+                </button>
+                <button class="action-btn" onclick="openSettings()" title="Configuración">
+                    <i class="ri-settings-3-line"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="storage-info">
+            <div class="storage-text">
+                <span>Espacio utilizado</span>
+                <span id="storageUsed">0 MB / 1 GB</span>
+            </div>
+            <div class="storage-bar">
+                <div class="storage-progress" id="storageProgress" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <div class="search-bar" id="searchBar" placeholder="Buscar archivos..."></div>
+
+        <div class="file-filters">
+            <button class="filter-btn active" data-filter="all">Todos</button>
+            <button class="filter-btn" data-filter="image">Imágenes</button>
+            <button class="filter-btn" data-filter="video">Videos</button>
+            <button class="filter-btn" data-filter="document">Documentos</button>
+            <button class="filter-btn" data-filter="audio">Audio</button>
+        </div>
+
+        <div class="sort-options">
+            <button class="sort-btn" data-sort="name" title="Ordenar por nombre">
+                <i class="ri-sort-alphabetically"></i>
+            </button>
+            <button class="sort-btn" data-sort="date" title="Ordenar por fecha">
+                <i class="ri-calendar-line"></i>
+            </button>
+            <button class="sort-btn" data-sort="size" title="Ordenar por tamaño">
+                <i class="ri-sort-asc"></i>
+            </button>
+        </div>
+
+        <div class="upload-container" id="dropZone">
+            <div class="upload-area">
+                <div class="upload-icon">
+                    <i class="ri-upload-cloud-2-line"></i>
+                </div>
+                <h2>Arrastra y suelta tus archivos aquí</h2>
+                <p class="upload-text">o</p>
+                <input type="file" id="fileInput" multiple style="display: none;">
+                <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
+                    <i class="ri-folder-open-line"></i>
+                    Seleccionar archivos
+                </button>
+            </div>
+        </div>
+
+        <div class="file-list" id="fileList">
+            <div class="empty-state" id="emptyState">
+                <i class="ri-folder-open-line" style="font-size: 3rem; color: var(--text-secondary);"></i>
+                <p>No hay archivos subidos aún</p>
+                <p>Arrastra archivos o haz clic en "Seleccionar archivos" para comenzar</p>
+            </div>
+        </div>
+    </main>
+
+    <div class="share-modal" id="shareModal">
+        <div class="share-content">
+            <button class="share-close" onclick="closeShareModal()">
+                <i class="ri-close-line"></i>
+            </button>
+            <h3>Compartir archivo</h3>
+            <div class="share-link">
+                <input type="text" id="shareLink" readonly>
+                <button class="copy-btn" onclick="copyShareLink()">
+                    <i class="ri-file-copy-line"></i>
+                </button>
+            </div>
+            <div class="file-stats">
+                <div class="file-stat">
+                    <i class="ri-time-line"></i>
+                    <span>Expira en 7 días</span>
+                </div>
+                <div class="file-stat">
+                    <i class="ri-download-line"></i>
+                    <span>Descargas ilimitadas</span>
+                </div>
+            </div>
+            <div class="password-section">
+                <h4>Protección con contraseña</h4>
+                <input type="password" id="sharePassword" class="password-input" placeholder="Contraseña (opcional)">
+                <button class="upload-btn" onclick="setSharePassword()">
+                    <i class="ri-lock-line"></i>
+                    Establecer contraseña
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="password-modal" id="passwordModal">
+        <div class="password-content">
+            <button class="share-close" onclick="closePasswordModal()">
+                <i class="ri-close-line"></i>
+            </button>
+            <h3>Archivo protegido</h3>
+            <p>Este archivo está protegido con contraseña</p>
+            <input type="password" id="filePassword" class="password-input" placeholder="Ingresa la contraseña">
+            <button class="upload-btn" onclick="validatePassword()">
+                <i class="ri-lock-unlock-line"></i>
+                Desbloquear
+            </button>
+        </div>
+    </div>
+
+    <div class="settings-modal" id="settingsModal">
+        <div class="settings-content">
+            <button class="share-close" onclick="closeSettings()">
+                <i class="ri-close-line"></i>
+            </button>
+            <h3>Configuración</h3>
+            <div class="settings-section">
+                <h4>Tema</h4>
+                <div class="theme-selector">
+                    <button class="theme-btn active" data-theme="dark" onclick="changeTheme('dark')"></button>
+                    <button class="theme-btn" data-theme="light" onclick="changeTheme('light')"></button>
+                    <button class="theme-btn" data-theme="purple" onclick="changeTheme('purple')"></button>
+                    <button class="theme-btn" data-theme="green" onclick="changeTheme('green')"></button>
+                </div>
+            </div>
+            <div class="settings-section">
+                <h4>Preferencias</h4>
+                <div class="settings-option">
+                    <span class="settings-label">Modo oscuro</span>
+                    <label class="settings-toggle">
+                        <input type="checkbox" checked>
+                        <span class="settings-slider"></span>
+                    </label>
+                </div>
+                <div class="settings-option">
+                    <span class="settings-label">Notificaciones</span>
+                    <label class="settings-toggle">
+                        <input type="checkbox" checked>
+                        <span class="settings-slider"></span>
+                    </label>
+                </div>
+            </div>
+            <div class="settings-section">
+                <h4>Almacenamiento</h4>
+                <div class="settings-option">
+                    <span class="settings-label">Límite de espacio</span>
+                    <span class="settings-value">1 GB</span>
+                </div>
+                <div class="settings-option">
+                    <span class="settings-label">Espacio utilizado</span>
+                    <span class="settings-value" id="settingsStorageUsed">0 MB</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="comments-modal" id="commentsModal">
+        <div class="comments-content">
+            <button class="share-close" onclick="closeComments()">
+                <i class="ri-close-line"></i>
+            </button>
+            <h3>Comentarios</h3>
+            <div class="comment-form">
+                <textarea class="comment-input" id="commentInput" placeholder="Escribe tu comentario..."></textarea>
+                <button class="upload-btn" onclick="addComment()">
+                    <i class="ri-send-plane-line"></i>
+                    Enviar comentario
+                </button>
+            </div>
+            <div id="commentsList">
+                <!-- Los comentarios se agregarán aquí dinámicamente -->
+            </div>
+        </div>
+    </div>
+
+    <div class="stats-modal" id="statsModal">
+        <div class="stats-content">
+            <button class="share-close" onclick="closeStats()">
+                <i class="ri-close-line"></i>
+            </button>
+            <h3>Estadísticas</h3>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value" id="totalFiles">0</div>
+                    <div class="stat-label">Archivos totales</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="totalSize">0 MB</div>
+                    <div class="stat-label">Espacio usado</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="totalDownloads">0</div>
+                    <div class="stat-label">Descargas</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="totalShares">0</div>
+                    <div class="stat-label">Compartidos</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const fileList = document.getElementById('fileList');
+        const emptyState = document.getElementById('emptyState');
+        const shareModal = document.getElementById('shareModal');
+        const shareLink = document.getElementById('shareLink');
+        const toast = document.getElementById('toast');
+        const settingsModal = document.getElementById('settingsModal');
+        const searchBar = document.getElementById('searchBar');
+        const storageProgress = document.getElementById('storageProgress');
+        const storageUsed = document.getElementById('storageUsed');
+        const settingsStorageUsed = document.getElementById('settingsStorageUsed');
+
+        const MAX_STORAGE = 1024 * 1024 * 1024; // 1GB
+        const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100MB
+        let currentStorage = 0;
+        let files = [];
+        let currentFilter = 'all';
+        let currentSort = 'date';
+        let currentTheme = 'dark';
+        let comments = [];
+        let stats = {
+            totalFiles: 0,
+            totalSize: 0,
+            totalDownloads: 0,
+            totalShares: 0
+        };
+
+        // Prevenir el comportamiento por defecto del navegador
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, preventDefaults, false);
+            document.body.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        // Efectos visuales durante el drag
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, unhighlight, false);
+        });
+
+        function highlight(e) {
+            dropZone.style.borderColor = '#4a90e2';
+            dropZone.style.backgroundColor = '#252525';
+            dropZone.classList.add('drag-over');
+        }
+
+        function unhighlight(e) {
+            dropZone.style.borderColor = '#4a90e2';
+            dropZone.style.backgroundColor = '#202020';
+            dropZone.classList.remove('drag-over');
+        }
+
+        // Manejar archivos soltados
+        dropZone.addEventListener('drop', handleDrop, false);
+        fileInput.addEventListener('change', handleFiles, false);
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            handleFiles({ target: { files: files } });
+        }
+
+        function handleFiles(e) {
+            const newFiles = [...e.target.files];
+            newFiles.forEach(validateAndUploadFile);
+            updateEmptyState();
+        }
+
+        function validateAndUploadFile(file) {
+            if (file.size > MAX_FILE_SIZE) {
+                showToast(`El archivo ${file.name} excede el tamaño máximo permitido (100MB)`, 'error');
+                return;
+            }
+
+            if (currentStorage + file.size > MAX_STORAGE) {
+                showToast('No hay suficiente espacio disponible', 'error');
+                return;
+            }
+
+            uploadFile(file);
+        }
+
+        function uploadFile(file) {
+            const fileData = {
+                id: generateFileId(),
+                name: file.name,
+                size: file.size,
+                type: file.type,
+                date: Date.now(),
+                password: null
+            };
+
+            files.push(fileData);
+            createFileElement(fileData);
+            stats.totalFiles++;
+            stats.totalSize += file.size;
+            saveData();
+            updateStats();
+        }
+
+        function createFileElement(fileData) {
+            const fileItem = document.createElement('div');
+            fileItem.className = 'file-item';
+            fileItem.dataset.type = getFileType(fileData.type);
+            fileItem.dataset.name = fileData.name.toLowerCase();
+            fileItem.dataset.size = fileData.size;
+            fileItem.dataset.date = fileData.date;
+            
+            const fileInfo = document.createElement('div');
+            fileInfo.className = 'file-info';
+            
+            const fileTypeIcon = document.createElement('div');
+            fileTypeIcon.className = 'file-type-icon';
+            fileTypeIcon.innerHTML = getFileIcon(fileData.type);
+            
+            const fileName = document.createElement('span');
+            fileName.className = 'file-name';
+            fileName.textContent = fileData.name;
+            
+            const fileSize = document.createElement('span');
+            fileSize.className = 'file-size';
+            fileSize.textContent = formatFileSize(fileData.size);
+            
+            const fileActions = document.createElement('div');
+            fileActions.className = 'file-actions';
+            
+            const shareBtn = document.createElement('button');
+            shareBtn.className = 'action-btn share';
+            shareBtn.innerHTML = '<i class="ri-share-line"></i>';
+            shareBtn.title = 'Compartir';
+            shareBtn.onclick = () => shareFile(fileData);
+            
+            const downloadBtn = document.createElement('button');
+            downloadBtn.className = 'action-btn download';
+            downloadBtn.innerHTML = '<i class="ri-download-line"></i>';
+            downloadBtn.title = 'Descargar';
+            downloadBtn.onclick = () => downloadFile(fileData);
+            
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'action-btn delete';
+            deleteBtn.innerHTML = '<i class="ri-delete-bin-line"></i>';
+            deleteBtn.title = 'Eliminar';
+            deleteBtn.onclick = () => deleteFile(fileItem, fileData.size);
+            
+            const progressBar = document.createElement('div');
+            progressBar.className = 'progress-bar';
+            const progressElement = document.createElement('div');
+            progressElement.className = 'progress';
+            progressBar.appendChild(progressElement);
+            
+            fileInfo.appendChild(fileTypeIcon);
+            fileInfo.appendChild(fileName);
+            fileInfo.appendChild(fileSize);
+            fileActions.appendChild(shareBtn);
+            fileActions.appendChild(downloadBtn);
+            fileActions.appendChild(deleteBtn);
+            fileItem.appendChild(fileInfo);
+            fileItem.appendChild(fileActions);
+            fileItem.appendChild(progressBar);
+            fileList.appendChild(fileItem);
+        }
+
+        function getFileType(mimeType) {
+            if (mimeType.startsWith('image/')) return 'image';
+            if (mimeType.startsWith('video/')) return 'video';
+            if (mimeType.startsWith('audio/')) return 'audio';
+            if (mimeType.startsWith('text/') || mimeType.includes('document')) return 'document';
+            return 'other';
+        }
+
+        function getFileIcon(fileType) {
+            const icons = {
+                'image/': '<i class="ri-image-line"></i>',
+                'video/': '<i class="ri-video-line"></i>',
+                'audio/': '<i class="ri-music-line"></i>',
+                'text/': '<i class="ri-file-text-line"></i>',
+                'application/pdf': '<i class="ri-file-pdf-line"></i>',
+                'application/zip': '<i class="ri-file-zip-line"></i>',
+                'application/x-rar-compressed': '<i class="ri-file-zip-line"></i>',
+                'application/msword': '<i class="ri-file-word-line"></i>',
+                'application/vnd.ms-excel': '<i class="ri-file-excel-line"></i>',
+                'application/vnd.ms-powerpoint': '<i class="ri-file-ppt-line"></i>'
+            };
+
+            for (const [type, icon] of Object.entries(icons)) {
+                if (fileType.startsWith(type)) return icon;
+            }
+            return '<i class="ri-file-line"></i>';
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function showToast(message, type = 'success') {
+            toast.textContent = message;
+            toast.className = `toast ${type}`;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        function deleteFile(fileItem, size) {
+            fileItem.style.opacity = '0';
+            setTimeout(() => {
+                fileItem.remove();
+                currentStorage -= size;
+                updateStorageInfo();
+                updateEmptyState();
+                showToast('Archivo eliminado correctamente', 'success');
+            }, 300);
+        }
+
+        function downloadFile(file) {
+            const url = URL.createObjectURL(file);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = file.name;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast('Descarga iniciada', 'success');
+        }
+
+        function shareFile(file) {
+            const fileId = generateFileId();
+            const shareUrl = `${window.location.origin}/share/${fileId}`;
+            shareLink.value = shareUrl;
+            shareModal.classList.add('active');
+        }
+
+        function closeShareModal() {
+            shareModal.classList.remove('active');
+        }
+
+        function copyShareLink() {
+            shareLink.select();
+            document.execCommand('copy');
+            showToast('Enlace copiado al portapapeles', 'success');
+        }
+
+        function generateFileId() {
+            return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+        }
+
+        function updateEmptyState() {
+            const hasFiles = fileList.children.length > 1;
+            emptyState.classList.toggle('visible', !hasFiles);
+        }
+
+        function openSettings() {
+            settingsModal.classList.add('active');
+        }
+
+        function closeSettings() {
+            settingsModal.classList.remove('active');
+        }
+
+        function updateStorageInfo() {
+            const percentage = (currentStorage / MAX_STORAGE) * 100;
+            storageProgress.style.width = `${percentage}%`;
+            storageUsed.textContent = `${formatFileSize(currentStorage)} / ${formatFileSize(MAX_STORAGE)}`;
+            settingsStorageUsed.textContent = formatFileSize(currentStorage);
+        }
+
+        function changeTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            currentTheme = theme;
+            document.querySelectorAll('.theme-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.theme === theme);
+            });
+            saveData();
+        }
+
+        function openComments() {
+            document.getElementById('commentsModal').classList.add('active');
+        }
+
+        function closeComments() {
+            document.getElementById('commentsModal').classList.remove('active');
+        }
+
+        function addComment() {
+            const commentInput = document.getElementById('commentInput');
+            const content = commentInput.value.trim();
+            
+            if (content) {
+                const comment = {
+                    id: Date.now(),
+                    content,
+                    author: 'Usuario',
+                    date: new Date().toISOString()
+                };
+                
+                comments.unshift(comment);
+                updateCommentsList();
+                commentInput.value = '';
+                saveData();
+                showToast('Comentario agregado', 'success');
+            }
+        }
+
+        function updateCommentsList() {
+            const commentsList = document.getElementById('commentsList');
+            commentsList.innerHTML = comments.map(comment => `
+                <div class="comment">
+                    <div class="comment-header">
+                        <span class="comment-author">${comment.author}</span>
+                        <span class="comment-date">${new Date(comment.date).toLocaleString()}</span>
+                    </div>
+                    <div class="comment-content">${comment.content}</div>
+                </div>
+            `).join('');
+        }
+
+        function openStats() {
+            updateStats();
+            document.getElementById('statsModal').classList.add('active');
+        }
+
+        function closeStats() {
+            document.getElementById('statsModal').classList.remove('active');
+        }
+
+        function updateStats() {
+            document.getElementById('totalFiles').textContent = stats.totalFiles;
+            document.getElementById('totalSize').textContent = formatFileSize(stats.totalSize);
+            document.getElementById('totalDownloads').textContent = stats.totalDownloads;
+            document.getElementById('totalShares').textContent = stats.totalShares;
+        }
+
+        function setSharePassword() {
+            const password = document.getElementById('sharePassword').value;
+            if (password) {
+                showToast('Contraseña establecida', 'success');
+            }
+        }
+
+        function openPasswordModal() {
+            document.getElementById('passwordModal').classList.add('active');
+        }
+
+        function closePasswordModal() {
+            document.getElementById('passwordModal').classList.remove('active');
+        }
+
+        function validatePassword() {
+            const password = document.getElementById('filePassword').value;
+            // Aquí iría la validación real de la contraseña
+            closePasswordModal();
+            showToast('Contraseña correcta', 'success');
+        }
+
+        // Filtros y búsqueda
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelector('.filter-btn.active').classList.remove('active');
+                btn.classList.add('active');
+                currentFilter = btn.dataset.filter;
+                filterFiles();
+            });
+        });
+
+        document.querySelectorAll('.sort-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelector('.sort-btn.active')?.classList.remove('active');
+                btn.classList.add('active');
+                currentSort = btn.dataset.sort;
+                sortFiles();
+            });
+        });
+
+        searchBar.addEventListener('input', filterFiles);
+
+        function filterFiles() {
+            const searchTerm = searchBar.value.toLowerCase();
+            const fileItems = document.querySelectorAll('.file-item');
+
+            fileItems.forEach(item => {
+                const matchesFilter = currentFilter === 'all' || item.dataset.type === currentFilter;
+                const fileName = item.dataset.name || '';
+                const matchesSearch = fileName.toLowerCase().includes(searchTerm);
+                item.style.display = matchesFilter && matchesSearch ? 'flex' : 'none';
+            });
+        }
+
+        function sortFiles() {
+            const fileList = document.getElementById('fileList');
+            const fileItems = Array.from(fileList.children).filter(child => child.classList.contains('file-item'));
+
+            fileItems.sort((a, b) => {
+                switch (currentSort) {
+                    case 'name':
+                        return a.dataset.name.localeCompare(b.dataset.name);
+                    case 'date':
+                        return b.dataset.date - a.dataset.date;
+                    case 'size':
+                        return b.dataset.size - a.dataset.size;
+                    default:
+                        return 0;
+                }
+            });
+
+            fileItems.forEach(item => fileList.appendChild(item));
+        }
+
+        // Cerrar modales al hacer clic fuera
+        [shareModal, settingsModal].forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                }
+            });
+        });
+
+        // Inicializar estado vacío y almacenamiento
+        updateEmptyState();
+        updateStorageInfo();
+
+        // Cargar datos guardados
+        function loadSavedData() {
+            const savedFiles = localStorage.getItem('cloudshare_files');
+            const savedComments = localStorage.getItem('cloudshare_comments');
+            const savedStats = localStorage.getItem('cloudshare_stats');
+            const savedTheme = localStorage.getItem('cloudshare_theme');
+
+            if (savedFiles) {
+                files = JSON.parse(savedFiles);
+                files.forEach(file => {
+                    createFileElement(file);
+                });
+            }
+
+            if (savedComments) {
+                comments = JSON.parse(savedComments);
+                updateCommentsList();
+            }
+
+            if (savedStats) {
+                stats = JSON.parse(savedStats);
+                updateStats();
+            }
+
+            if (savedTheme) {
+                changeTheme(savedTheme);
+            }
+
+            updateStorageInfo();
+            updateEmptyState();
+        }
+
+        // Guardar datos
+        function saveData() {
+            localStorage.setItem('cloudshare_files', JSON.stringify(files));
+            localStorage.setItem('cloudshare_comments', JSON.stringify(comments));
+            localStorage.setItem('cloudshare_stats', JSON.stringify(stats));
+            localStorage.setItem('cloudshare_theme', currentTheme);
+        }
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', () => {
+            loadSavedData();
+        });
+    </script>
+</body>
+</html> 
