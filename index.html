@@ -1569,7 +1569,65 @@
         // Inicialización
         document.addEventListener('DOMContentLoaded', () => {
             loadSavedData();
+            const params = new URLSearchParams(window.location.search);
+            const fileId = params.get('file');
+            if (fileId) {
+                showDownloadView(fileId);
+            }
         });
+
+        function showDownloadView(fileId) {
+            document.body.innerHTML = '';
+            const files = JSON.parse(localStorage.getItem('cloudshare_files') || '[]');
+            const file = files.find(f => f.id === fileId);
+            const theme = localStorage.getItem('cloudshare_theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', theme);
+
+            if (!file) {
+                document.body.innerHTML = `<div style='display:flex;justify-content:center;align-items:center;height:100vh;'><div style='background:var(--bg-tertiary);padding:2rem;border-radius:var(--border-radius);color:var(--error);font-size:1.2rem;'>Archivo no encontrado</div></div>`;
+                return;
+            }
+
+            let html = `<div style='display:flex;justify-content:center;align-items:center;height:100vh;'><div style='background:var(--bg-tertiary);padding:2rem 2.5rem;border-radius:var(--border-radius);min-width:320px;box-shadow:0 2px 16px #0003;'>`;
+            html += `<h2 style='color:var(--accent);margin-bottom:1rem;'><i class='ri-download-cloud-2-line'></i> Descargar archivo</h2>`;
+            html += `<div style='margin-bottom:1rem;'><b>Nombre:</b> <span>${file.name}</span></div>`;
+            html += `<div style='margin-bottom:1rem;'><b>Tamaño:</b> <span>${formatFileSize(file.size)}</span></div>`;
+            if (file.password) {
+                html += `<div id='pw-section'><input type='password' id='pw-input' placeholder='Contraseña' style='width:100%;padding:0.7rem;border-radius:8px;border:none;background:var(--bg-secondary);color:var(--text-primary);margin-bottom:1rem;'><button id='pw-btn' style='width:100%;padding:0.7rem;background:var(--accent);color:white;border:none;border-radius:8px;font-weight:bold;cursor:pointer;'>Desbloquear</button><div id='pw-error' style='color:var(--error);margin-top:0.5rem;display:none;'>Contraseña incorrecta</div></div>`;
+                html += `<button id='dl-btn' style='width:100%;padding:0.7rem;background:var(--accent);color:white;border:none;border-radius:8px;font-weight:bold;cursor:pointer;display:none;margin-top:1rem;'><i class='ri-download-line'></i> Descargar</button>`;
+            } else {
+                html += `<button id='dl-btn' style='width:100%;padding:0.7rem;background:var(--accent);color:white;border:none;border-radius:8px;font-weight:bold;cursor:pointer;'><i class='ri-download-line'></i> Descargar</button>`;
+            }
+            html += `<div style='margin-top:2rem;text-align:center;'><a href='index.html' style='color:var(--accent);text-decoration:underline;'>Volver a CloudShare</a></div>`;
+            html += `</div></div>`;
+            document.body.innerHTML = html;
+
+            const dlBtn = document.getElementById('dl-btn');
+            if (file.password) {
+                dlBtn.style.display = 'none';
+                document.getElementById('pw-btn').onclick = () => {
+                    const val = document.getElementById('pw-input').value;
+                    if (val === file.password) {
+                        document.getElementById('pw-section').style.display = 'none';
+                        dlBtn.style.display = 'block';
+                    } else {
+                        document.getElementById('pw-error').style.display = 'block';
+                    }
+                };
+            }
+            dlBtn.onclick = () => {
+                // Simular descarga local
+                const blob = new Blob([new Uint8Array(file.data)], {type: file.type});
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = file.name;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            };
+        }
     </script>
 </body>
 </html> 
